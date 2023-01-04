@@ -4,11 +4,13 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
+    "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.1.2",
     "axios": "^1.2.2",
+    "i": "^0.3.7",
     "mapbox-gl": "^2.11.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -16,8 +18,9 @@
     "react-howler": "^5.2.0",
     "react-icons": "^4.7.1",
     "react-map-gl": "^7.0.20",
+    "react-map-gl-geocoder": "^2.2.0",
     "react-router-dom": "^6.6.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -1,67 +1,74 @@
 import { Button } from "antd";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ReactMapGL, { Marker } from "react-map-gl";
+// import {GeolocateControl} from 'react-map-gl-geocoder';
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import fmStation from "./geo.min.json";
-import 'mapbox-gl/dist/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css";
 import { IoRadioOutline } from "react-icons/io5";
+import { RadioStaionContext } from ".";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import axios from "axios";
+import { MAPBOXTOKEN } from "./MapBoxTOKEN";
 export default function MyMap() {
+  const { chosenRadio, viewPortHandler } = useContext(RadioStaionContext);
   const [viewport, setViewport] = useState({
-    latitude: 45.4211,
-    longitude: -75.6903,
-    width: "100vw",
-    height: "100vh",
-    zoom: 9,
+    // latitude: chosenRadio.coordinates?.lat,
+    // longitude: chosenRadio.coordinates?.long,
+    // width: "100vw",
+    // height: "100vh",
+    // zoom: 9,
   });
+  // const viewPortHandler = () => {
+  //   axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${chosenRadio}.json?types=region&access_token=${MAPBOXTOKEN.KEY}`)
+  //   .then((res)=>{
+  //     console.log(res.data.features.filter((reg)=>reg.place_name===chosenRadio));
+  //   })
+  //   console.log(chosenRadio,"hi");
+  // };
+  useEffect(() => {
+    setViewport({
+      latitude: chosenRadio.coordinates?.lat,
+      longitude: chosenRadio.coordinates?.long,
+      width: "100vw",
+      height: "100vh",
+      zoom: 3,
+    });
+  }, [chosenRadio]);
   return (
     <div style={{ height: "100vh" }}>
       <ReactMapGL
+        {...viewport}
         style={{ height: "100%" }}
-        // {...viewport}
-        mapboxAccessToken="pk.eyJ1IjoiZ2Fua2h1bHVnIiwiYSI6ImNsY2dtZnM4cTAybXQzdnA1aHhqb2U1NnkifQ.awd0eQDFkhJp7S_5cSPztQ"
+        mapboxAccessToken={MAPBOXTOKEN.KEY}
         mapStyle="mapbox://styles/mapbox/streets-v12"
         projection="globe"
       >
-        {/* <Marker latitude={55.755825} longitude={37.6173}></Marker> */}
-        {/* <Marker
-        latitude={55.755825} longitude={37.6173}></Marker> */}
-        {fmStation.features.slice(0,1000).map((fm, idx) => {
+        <Marker
+          offsetTop={(-viewport.zoom * 5) / 2}
+          latitude={chosenRadio.coordinates?.lat}
+          longitude={chosenRadio.coordinates?.long}
+        ></Marker>
+        {/* {fmStation.features.slice(0, 1000).map((fm, idx) => {
           // console.log(fm);
           return (
             <Marker
               key={idx}
-              offsetTop={(-viewport.zoom * 5) /2}
+              offsetTop={(-viewport.zoom * 5) / 2}
               latitude={fm.geometry.coordinates[1]}
               longitude={fm.geometry.coordinates[0]}
-            //   width={viewport.zoom * 10}
-            //   height={viewport.zoom * 10}
-            //   onDrag
+              //   width={viewport.zoom * 10}
+              //   height={viewport.zoom * 10}
+              //   onDrag
             >
-               <IoRadioOutline color="green" style={{width:"20px",height:"20px"}}/>
+              <IoRadioOutline
+                color="green"
+                style={{ width: "20px", height: "20px" }}
+              />
             </Marker>
           );
-        })}
+        })} */}
       </ReactMapGL>
-      {/* <ReactMapGL
-          {...viewport}
-          mapboxAccessToken="pk.eyJ1IjoiZ2Fua2h1bHVnIiwiYSI6ImNsY2dtZnM4cTAybXQzdnA1aHhqb2U1NnkifQ.awd0eQDFkhJp7S_5cSPztQ"
-          mapStyle="mapbox://styles/mapbox/streets-v11"
-          onvie
-        //   onViewportChange={(viewport) => {
-        //     setViewport(viewport);
-        //   }}
-        >
-          {fmStation.features.map((fm, idx) => {
-            // console.log(fm);
-            <Marker
-              key={idx}
-              latitude={fm.geometry.coordinates[1]}
-              longitude={fm.geometry.coordinates[0]}
-            >
-             <button style={{height:"100px", backgroundColor:"red"}}>FM</button>
-            </Marker>;
-          })}
-          Markers
-        </ReactMapGL> */}
     </div>
   );
 }
