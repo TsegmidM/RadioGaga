@@ -9,7 +9,7 @@ function App() {
       <BrowserRouter>
       <Routes>
         <Route index element={<RadioGaga/>}/>
-          <Route path=':map' element={<MyMap/>}/>
+          {/* <Route path=':map' element={<MyMap/>}/> */}
     
 
       </Routes>

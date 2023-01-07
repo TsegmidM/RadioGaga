@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import MyMap from "./map";
 import { MAPBOXTOKEN } from "./MapBoxTOKEN";
 
-export const RadioStaionContext = createContext();
+export const RadioStationContext = createContext();
 
 export default function RadioGaga() {
   const [radioList, setRadioList] = useState();
@@ -68,28 +68,27 @@ export default function RadioGaga() {
   };
 
   return (
-    <RadioStaionContext.Provider value={{ chosenRadio, viewPortHandler }}>
+    <RadioStationContext.Provider value={{ setCurrentChannel }}>
       <div>
-        <Button
+        {/* <Button
           onClick={() => {
             navigate("Map");
           }}
         >
           GO TO MAP
-        </Button>
-        <Search
+        </Button> */}
+        {/* <Search
           placeholder="input search text"
           allowClear
           enterButton="Search"
           size="large"
           onSearch={onSearch}
         />
-        {radioList?.slice(0,5).map((radio, idx) => {
+        {radioList?.slice(0,8).map((radio, idx) => {
           const parts = radio?._source.url.split("/");
           const channelId = parts[parts.length - 1];
           return (
             <div key={idx}>
-              {/* {radio?._id} */}
               {radio?._source.subtitle}
               {radio?._source.title}
 
@@ -98,6 +97,7 @@ export default function RadioGaga() {
                   viewPortHandler(radio?._source.subtitle);
                   console.log(channelId); // Output: "AOpBYmMA"
                   // setChosenRadio({location:radio?._source.subtitle});
+                  // navigate(`${radio._source.title}`)
                   setCurrentChannel({
                     name: radio._source.title,
                     location: radio._source.subtitle,
@@ -105,14 +105,11 @@ export default function RadioGaga() {
                   });
                 }}
               >
-                {/* play */}
-                {/* <PlayCircleOutlined/> */}
-                <PlayCircleOutlined />
               </button>
               <MdOutlineFavoriteBorder />
             </div>
           );
-        })}
+        })} */}
         <H5AudioPlayer
           style={{
             // display: "flex",
@@ -139,8 +136,8 @@ export default function RadioGaga() {
           src={currentChannel?.url}
           // onPlay={(e) => console.log("onPlay")}
         ></H5AudioPlayer>
-        {chosenRadio.location && <MyMap />}
+        <MyMap />
       </div>
-    </RadioStaionContext.Provider>
+    </RadioStationContext.Provider>
   );
 }
