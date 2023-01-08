@@ -1,40 +1,42 @@
-import { Button, Modal, Popover } from "antd";
+import { Button, Modal, Popover, Radio } from "antd";
 import { useContext, useEffect, useState } from "react";
-import ReactMapGL, { Source, Layer, Marker, Popup } from "react-map-gl";
+import ReactMapGL, {
+  Source,
+  Layer,
+  Marker,
+  Popup,
+  NavigationControl,
+} from "react-map-gl";
 import fmStation from "./geo.json";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+// import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+// import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import axios from "axios";
 import { MAPBOXTOKEN } from "./MapBoxTOKEN";
 import { PlayCircleFilled } from "@ant-design/icons";
 import { RadioStationContext } from ".";
 export default function MyMap() {
   const [radioList, setRadioList] = useState();
-
+  const [cursor, setCursor] = useState("");
   const [showPopup, setShowPopup] = useState("");
   const { setCurrentChannel } = useContext(RadioStationContext);
   const layer = {
-    id: "countries",
+    id: "country",
     type: "circle",
     source: "countriesall",
-    // "source-layer": "country_boundaries",
-    // filter:'worldviewFilter',
+    // interactive: true,
     paint: {
-      'circle-radius': {
-        'base': 1.75,
-        'stops': [
-        [12, 2],
-        [22, 180]
-        ]
-        },
-      // "base": 1,
-      // "stops":[[12,2],[22,180]],
+      "circle-radius": {
+        base: 1.75,
+        stops: [
+          [12, 2],
+          [22, 180],
+        ],
+      },
       "circle-color": "red",
-      // 'circle-wi'
-      "circle-stroke-width": 0.1,
-      "circle-stroke-color": "white",
-      'circle-opacity': 1
+      "circle-stroke-width": 20,
+      "circle-stroke-color": "transparent",
+      // "circle-opacity": 1,
     },
   };
 
@@ -61,47 +63,35 @@ export default function MyMap() {
     // height: "100vh",
     // zoom: 9,
   });
-  // const viewPortHandler = () => {
-  //   axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${chosenRadio}.json?types=region&access_token=${MAPBOXTOKEN.KEY}`)
-  //   .then((res)=>{
-  //     console.log(res.data.features.filter((reg)=>reg.place_name===chosenRadio));
-  //   })
-  //   console.log(chosenRadio,"hi");
-  // };
   // useEffect(() => {
-  //   setViewport({
-  //     // latitude: chosenRadio.coordinates?.lat,
-  //     // longitude: chosenRadio.coordinates?.long,
-  //     width: "80vw",
-  //     height: "80vh",
-  //     zoom: 3,
-  //     transitionDuration: 1000,
-  //   });
-  // }, [chosenRadio]);
+  //   if (showPopup)
+  //     setViewport({
+  //       latitude: showPopup.lngLat.lat,
+  //       longitude: showPopup.lngLat.lng,
+  //       // center: [showPopup.lngLat.lat,showPopup.lngLat.lng]
+  //       zoom: 4,
+  //     });
+  // }, [showPopup]);
+
   return (
     <div style={{ height: "100vh" }}>
       <ReactMapGL
-        // id="EhDelhii"
         {...viewport}
-        zoom="2"
+        // zoom="2"
         style={{ height: "100%" }}
         mapboxAccessToken={MAPBOXTOKEN.KEY}
         mapStyle="mapbox://styles/mapbox/streets-v12/"
         projection="globe"
-        minZoom="3"
+        // minZoom="5"
+        maxZoom="5.5"
+        cursor={cursor}
         onMouseMove={(e) => {
-          // {Sh}
-
-          if (e.features[0]) {
-            getChannelsbyId(e.features[0].properties?.location_id);
-            setShowPopup({
-              lngLat: e.lngLat,
-              title: e.features[0].properties.title,
-            });
+          if (e.features && e.features.length > 0) {
+            setCursor("pointer");
+          } else {
+            setCursor("");
           }
-        }}
-        onClick={(e) => {
-          // getChannelsbyId(e.features[0].properties.location_id);
+          
           // if (e.features[0]) {
           //   getChannelsbyId(e.features[0].properties?.location_id);
           //   setShowPopup({
@@ -109,34 +99,45 @@ export default function MyMap() {
           //     title: e.features[0].properties.title,
           //   });
           // }
-          // e.features[0]?.properties &&
-          // window.alert(e.features[0]?.properties.title);
-          // setShowPopup(e.features[0]);
-          // e.features[0] && setShowPopup({lngLat:e.lngLat});
-          // return(
-          // <Popup></Popup>
-          // )
-          // console.log(e.features[0].properties);
+        }}
+        onClick={(e) => {
+          console.log(e);
+          if (!showPopup && e.features[0]) {
+            console.log("YYES");
+            getChannelsbyId(e.features[0].properties?.location_id);
+            setShowPopup({
+              lngLat: e.lngLat,
+              title: e.features[0].properties.title,
+            });
+          } else setShowPopup("");
         }}
         interactiveLayerIds={[layer.id]}
       >
-        {showPopup && (
+        <NavigationControl></NavigationControl>
+        {radioList && showPopup && (
           <Popup
             style={{ width: "10vw", height: "20vh" }}
             longitude={showPopup.lngLat.lng}
             latitude={showPopup.lngLat.lat}
-            anchor="bottom"
-            onClose={() => setShowPopup("")}
+            anchor="bottom-left"
+            onOpen={() => console.log(showPopup, "ssd")}
+            // closeOnClick={() => setShowPopup(null)}
+            onClose={() => {
+              setShowPopup(null);
+              setRadioList(null);
+            }}
           >
-            {radioList?.map((radio) => {
+            {radioList?.slice(0, 10).map((radio, idx) => {
+              console.log(radio);
               const parts = radio?.href?.split("/");
               const channelId = parts[parts?.length - 1];
               return (
-                <div>
+                <div key={idx}>
                   <div>
                     <span>{radio.title}</span>
                     <PlayCircleFilled
                       onClick={() => {
+                        setShowPopup(null);
                         setCurrentChannel({
                           name: radio.title,
                           url: `https://radio.garden/api/ara/content/listen/${channelId}/channel.mp3`,
@@ -158,38 +159,7 @@ export default function MyMap() {
         >
           <Layer {...layer} />
         </Source>
-        {/* <Marker
-          offsetTop={(-viewport.zoom * 5) / 2}
-          {...viewport}
-          // onDrag
-          latitude={chosenRadio.coordinates?.lat}
-          longitude={chosenRadio.coordinates?.long}
-        ></Marker> */}
-        {/* {fmStation.features.slice(0, 1000).map((fm, idx) => {
-          // console.log(fm);
-          return (
-            <Marker
-              key={idx}
-              offsetTop={(-viewport.zoom * 5) / 2}
-              latitude={fm.geometry.coordinates[1]}
-              longitude={fm.geometry.coordinates[0]}
-              //   width={viewport.zoom * 10}
-              //   height={viewport.zoom * 10}
-              //   onDrag
-            >
-              <IoRadioOutline
-                color="green"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </Marker>
-          );
-        })} */}
       </ReactMapGL>
-      {/* <GeolocateControl
-      positionOptions={{ enableHighAccuracy: true }}
-      trackUserLocation={true}>
-        
-      </GeolocateControl> */}
     </div>
   );
 }
