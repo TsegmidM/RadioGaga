@@ -1,56 +1,85 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import H5AudioPlayer from "react-h5-audio-player";
-
 import "react-h5-audio-player/lib/styles.css";
-import { useNavigate } from "react-router-dom";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 import MyMap from "./map";
 import "./style.css";
 import MapBoxSearch from "./search";
-
+import { useNavigate, useParams } from "react-router-dom";
 export const RadioStationContext = createContext();
 
 export default function RadioGaga() {
   const [radioList, setRadioList] = useState();
   const [currentChannel, setCurrentChannel] = useState();
+  const [isThemeDark, setIsThemeDark] = useState(false);
+  const { radioId } = useParams();
   const navigate = useNavigate();
-
+  useEffect(() => {
+    if(radioId!=='search')
+    navigate('/')
+  }, []);
   return (
     <RadioStationContext.Provider
-      value={{ setCurrentChannel, setRadioList, radioList, currentChannel }}
+      value={{
+        setCurrentChannel,
+        setRadioList,
+        radioList,
+        currentChannel,
+        isThemeDark,
+      }}
     >
       <div className="radioMain">
-        {/* <Button
+        <button
+          className="radiogaga-theme"
+          style={{
+            color: isThemeDark ? "#f1c40f" : "f39c12",
+            backgroundColor: isThemeDark ? "#696969" : "white",
+          }}
           onClick={() => {
-            navigate("Map");
+            setIsThemeDark(!isThemeDark);
           }}
         >
-          GO TO MAP
-        </Button> */}
+          {isThemeDark ? <MdDarkMode /> : <MdLightMode />}
+        </button>
         <MapBoxSearch />
         <H5AudioPlayer
           className="h5AudioPlayer"
-          header={<span className="h5Player-span">{currentChannel?.name}</span>}
-          footer={<span className="h5Player-span">{currentChannel?.location}</span>}
+          style={{
+            color: isThemeDark ? "#f1c40f" : "black",
+            backgroundColor: isThemeDark ? "#696969" : "transparent",
+            opacity: "unset",
+          }}
+          header={
+            <span
+              style={{
+                color: isThemeDark ? "#f1c40f" : "red",
+              }}
+              className="h5Player-span"
+            >
+              {currentChannel?.name}
+            </span>
+          }
+          footer={
+            <span
+              style={{
+                color: isThemeDark ? "#f1c40f" : "red",
+              }}
+              className="h5Player-span"
+            >
+              {currentChannel?.location}
+            </span>
+          }
+          volume={0.3}
           showSkipControls={false}
           showJumpControls={false}
-          //  autoPlayAfterSrcChange={true}
+          // autoPlayAfterSrcChange={true}
           showFilledProgress={false}
           hasDefaultKeyBindings={false}
           layout={"stacked"}
           customAdditionalControls={[]}
-          
-          customProgressBarSection={
-            [
-              // <div>Hi</div>,
-              // RHAP_UI.CURRENT_TIME,
-              // RHAP_UI.CURRENT_LEFT_TIME,
-              // RHAP_UI.DURATION
-              
-            ]
-          }
+          customProgressBarSection={[]}
           autoPlay
           src={currentChannel?.url}
-          // onPlay={(e) => console.log("onPlay")}
         ></H5AudioPlayer>
         <MyMap className="RadioMap" />
       </div>
