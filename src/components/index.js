@@ -15,9 +15,12 @@ export default function RadioGaga() {
   const { radioId } = useParams();
   const navigate = useNavigate();
   useEffect(() => {
-    if(radioId!=='search')
-    navigate('/')
+    if (radioId !== "search") { 
+      navigate("/");
+    }
+    // eslint-disable-next-line
   }, []);
+
   return (
     <RadioStationContext.Provider
       value={{
