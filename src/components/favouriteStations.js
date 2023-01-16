@@ -5,20 +5,24 @@ import { useNavigate } from "react-router-dom";
 import { RadioStationContext } from ".";
 
 export default function FavStations() {
-  const { favouriteChannels, updateFavouriteChannels,setCurrentChannel,isThemeDark } =
-    useContext(RadioStationContext);
+  const {
+    favouriteChannels,
+    updateFavouriteChannels,
+    setCurrentChannel,
+    isThemeDark,
+  } = useContext(RadioStationContext);
   const [modal2Open, setModal2Open] = useState(false);
   const navigate = useNavigate();
   return (
-    <div
-      className="favourite-stations"
-      style={{ backgroundColor: isThemeDark ? "#696969" : "white",
-      color: isThemeDark ? "#f1c40f" : "red",}}
-      onMouseEnter={() => {
-        setModal2Open(true);
-      }}
-    >
-      <span>Your Favourite Stations!</span>
+    <div>
+      <MdFavorite
+        className="favourite-stations"
+        color={isThemeDark ? "#f1c40f" : "red"}
+        size={25}
+        onMouseEnter={() => {
+          setModal2Open(true);
+        }}
+      />
       <Modal
         title={
           <span>
