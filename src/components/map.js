@@ -11,14 +11,19 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
 import { MAPBOXTOKEN } from "./MapBoxTOKEN";
 import { RadioStationContext } from ".";
-import { MdOutlineRadio } from "react-icons/md";
+import { MdFavorite, MdFavoriteBorder, MdOutlineRadio } from "react-icons/md";
 export default function MyMap() {
   const [radioList, setRadioList] = useState();
   const [cursor, setCursor] = useState("");
   const [showPopup, setShowPopup] = useState("");
   const navigate = useNavigate();
-  const { setCurrentChannel, currentChannel, isThemeDark } =
-    useContext(RadioStationContext);
+  const {
+    setCurrentChannel,
+    currentChannel,
+    isThemeDark,
+    favouriteChannels,
+    updateFavouriteChannels,
+  } = useContext(RadioStationContext);
   const layer = {
     id: "country",
     type: "circle",
@@ -129,35 +134,57 @@ export default function MyMap() {
                 fontSize: "small",
               }}
             >
-                <span className="radiolist-span">
-                  Choose the radio!
-                  <MdOutlineRadio style={{ color: "green" }} />
-                </span>
+              <span className="radiolist-span">
+                Choose the radio!
+                <MdOutlineRadio style={{ color: "green" }} />
+              </span>
             </div>
             {radioList?.slice(0, 8).map((radio, idx) => {
               // console.log(radio);
               const parts = radio?.href?.split("/");
               const channelId = parts[parts?.length - 1];
               return (
-                <div
-                  className="stationOnModal"
-                  key={idx}
-                  onClick={() => {
-                    navigate(`/${parts}`);
-                    setShowPopup(null);
-                    setCurrentChannel({
-                      name: radio.title,
-                      url: `https://radio.garden/api/ara/content/listen/${channelId}/channel.mp3`,
-                    });
-                  }}
-                >
-                  <span>{radio.title}</span>
+                <div className="stationOnModal-container" key={idx}>
+                  <div
+                    className="stationOnModal"
+                    onClick={() => {
+                      navigate(`/${parts}`);
+                      setShowPopup(null);
+                      setCurrentChannel({
+                        name: radio.title,
+                        url: `https://radio.garden/api/ara/content/listen/${channelId}/channel.mp3`,
+                      });
+                    }}
+                  >
+                    <span>{radio.title}</span>
+                  </div>
+                  <span
+                    onClick={() => {
+                      updateFavouriteChannels({
+                        type: favouriteChannels.channelIds?.includes(channelId)
+                          ? "RemoveFromFavourite"
+                          : "addToFavourite",
+                        data: {
+                          channelId: channelId,
+                          channelName: radio.title,
+                          url: parts,
+                        },
+                      });
+                      // console.log(favouriteChannels);
+                    }}
+                  >
+                    {favouriteChannels.channelIds?.includes(channelId) ? (
+                      <MdFavorite color="red" />
+                    ) : (
+                      <MdFavoriteBorder />
+                    )}
+                  </span>
                 </div>
               );
             })}
           </Popup>
         )}
-        <Source  id="countriesall" type="geojson" data={fmStation}>
+        <Source id="countriesall" type="geojson" data={fmStation}>
           <Layer {...layer} />
         </Source>
       </ReactMapGL>

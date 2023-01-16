@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import H5AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
@@ -6,16 +6,48 @@ import MyMap from "./map";
 import "./style.css";
 import MapBoxSearch from "./search";
 import { useNavigate, useParams } from "react-router-dom";
+import FavStations from "./favouriteStations";
 export const RadioStationContext = createContext();
-
+const reducerChannels = (currState, action) => {
+  switch (action.type) {
+    case "addToFavourite":
+      return {
+        channels: [...currState.channels, action.data],
+        channelIds: [...currState.channelIds, action.data.channelId],
+      };
+    case "RemoveFromFavourite":
+      return {
+        channels: currState.channels.filter(
+          (channel) => channel.channelId !== action.data.channelId
+        ),
+        channelIds: currState.channelIds.filter(
+          (id) => id !== action.data.channelId
+        ),
+      };
+    default:
+      window.alert("error!");
+  }
+};
 export default function RadioGaga() {
   const [radioList, setRadioList] = useState();
   const [currentChannel, setCurrentChannel] = useState();
   const [isThemeDark, setIsThemeDark] = useState(false);
+  const [favouriteChannels, updateFavouriteChannels] = useReducer(
+    reducerChannels,
+    localStorage.getItem("favStations")
+      ? JSON.parse(localStorage.getItem("favStations"))
+      : { channels: [{}], channelIds: [] }
+  );
+  
   const { radioId } = useParams();
   const navigate = useNavigate();
+  //add to localStorage
   useEffect(() => {
-    if (radioId !== "search") { 
+    localStorage.setItem("favStations", JSON.stringify(favouriteChannels));
+  }, [favouriteChannels]);
+
+  useEffect(() => {
+    if (radioId !== "search") {
       navigate("/");
     }
     // eslint-disable-next-line
@@ -29,6 +61,8 @@ export default function RadioGaga() {
         radioList,
         currentChannel,
         isThemeDark,
+        favouriteChannels,
+        updateFavouriteChannels,
       }}
     >
       <div className="radioMain">
@@ -45,6 +79,7 @@ export default function RadioGaga() {
           {isThemeDark ? <MdDarkMode /> : <MdLightMode />}
         </button>
         <MapBoxSearch />
+        <FavStations />
         <H5AudioPlayer
           className="h5AudioPlayer"
           style={{

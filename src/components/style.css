@@ -38,8 +38,6 @@
   border-radius: 30px;
   border: none;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  /* justify-content: space-between; */
-  /* align-items: center; */
   justify-content: center;
   position: absolute;
   margin-left: auto;
@@ -53,16 +51,28 @@
   color: white;
 } */
 .h5Player-span {
-  /* background-color: white; */
-  /* padding: 2px; */
-  /* border-radius: 10px; */
-  /* font-size: medium; */
   color: black;
   font-weight: 600;
 }
-.radiolist-span{
-  /* display: flex; */
+.radiolist-span {
   text-align: center;
+}
+.favourite-stations {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 1%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 20px;
+  border-radius: 30px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  font-weight: 600;
 }
 .search-box {
   position: absolute;
@@ -84,9 +94,6 @@
   transition: 0.8s;
 }
 .search-box-input {
-  /* width: 75px; */
-  /* width: 2000px; */
-  /* width:auto; */
   outline: none;
   border: none;
   font-weight: 500;
@@ -100,10 +107,15 @@
   text-align: center;
   cursor: pointer;
 }
+.stationOnModal-container {
+  display: flex;
+  justify-content: center;
+}
 .stationOnModal:hover {
   background-color: #f39c12;
   border-radius: 5px;
 }
+
 @media (max-width: 600px) {
   .h5AudioPlayer {
     width: 80vw;

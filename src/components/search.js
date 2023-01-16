@@ -5,14 +5,19 @@ import axios from "axios";
 import "./style.css";
 import { MAPBOXTOKEN } from "./MapBoxTOKEN";
 import { useNavigate, useParams } from "react-router-dom";
-import { MdOutlineRadio } from "react-icons/md";
+import { MdFavorite, MdFavoriteBorder, MdOutlineRadio } from "react-icons/md";
 export default function MapBoxSearch() {
   const navigate = useNavigate();
   const { radioId } = useParams();
   const [modal2Open, setModal2Open] = useState(false);
   const { Search } = Input;
-  const { setCurrentChannel, radioList, setRadioList } =
-    useContext(RadioStationContext);
+  const {
+    setCurrentChannel,
+    radioList,
+    setRadioList,
+    favouriteChannels,
+    updateFavouriteChannels,
+  } = useContext(RadioStationContext);
   const viewPortHandler = (location, name, url) => {
     axios
       .get(
@@ -81,7 +86,12 @@ export default function MapBoxSearch() {
       />
       {radioList?.length > 0 && (
         <Modal
-          title={<span>Choose the radio!<MdOutlineRadio style={{ color: "green" }} /> </span>}
+          title={
+            <span>
+              Choose the radio!
+              <MdOutlineRadio style={{ color: "green" }} />
+            </span>
+          }
           style={{
             textAlign: "center",
           }}
@@ -104,7 +114,7 @@ export default function MapBoxSearch() {
               const parts = radio?._source.url.split("/");
               const channelId = parts[parts.length - 1];
               return (
-                <div key={idx}>
+                <div key={idx} className="stationOnModal-container">
                   <div
                     className="stationOnModal"
                     style={{
@@ -113,7 +123,6 @@ export default function MapBoxSearch() {
                     }}
                     onClick={() => {
                       navigate(`/${parts}`);
-
                       viewPortHandler(
                         radio?._source.subtitle,
                         radio._source.title,
@@ -121,9 +130,29 @@ export default function MapBoxSearch() {
                       );
                     }}
                   >
-                    {radio?._source.subtitle}
-                    {radio?._source.title}
+                    <span>{radio?._source.subtitle}</span>
+                    <span>{radio?._source.title}</span>
                   </div>
+                  <span
+                    onClick={() => {
+                      updateFavouriteChannels({
+                        type: favouriteChannels.channelIds?.includes(channelId)
+                          ? "RemoveFromFavourite"
+                          : "addToFavourite",
+                        data: {
+                          channelId: channelId,
+                          channelName: radio._source.title,
+                          url: parts,
+                        },
+                      });
+                    }}
+                  >
+                    {favouriteChannels.channelIds?.includes(channelId) ? (
+                      <MdFavorite color="red"/>
+                    ) : (
+                      <MdFavoriteBorder />
+                    )}
+                  </span>
                 </div>
               );
             })}
