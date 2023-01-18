@@ -23,13 +23,16 @@ export default function MyMap() {
     isThemeDark,
     favouriteChannels,
     updateFavouriteChannels,
+    viewport,
+    setViewport
   } = useContext(RadioStationContext);
   const layer = {
     id: "country",
     type: "circle",
     source: "countriesall",
     // interactive: true,
-    // filter:['==', 'country', 'Mongolia'],
+    //  filter:['==', 'country', `${viewport.country}`],
+     filter: viewport.country ? ['==', 'country', `${viewport.country}`] : ['has', 'country'],
     paint: {
       "circle-radius": {
         base: 1.75,
@@ -58,7 +61,7 @@ export default function MyMap() {
         }
       });
   };
-  const [viewport, setViewport] = useState({});
+
   useEffect(() => {
     if (currentChannel?.coordinates) {
       setViewport({
@@ -76,8 +79,15 @@ export default function MyMap() {
       <ReactMapGL
         preserveDrawingBuffer
         interactiveLayerIds={[layer.id]}
-        {...viewport}
-        // zoom="2"
+        {...viewport.coordinates}
+        onMove={()=>{
+          setViewport((currState)=>{
+            return {
+              ...currState,
+              coordinates:""
+            }
+          })
+        }}
         style={{ height: "100%" }}
         mapboxAccessToken={MAPBOXTOKEN.KEY}
         mapStyle={
@@ -86,7 +96,7 @@ export default function MyMap() {
             : "mapbox://styles/mapbox/streets-v12/"
         }
         projection="globe"
-        // minZoom="5"
+        minZoom="2"
         maxZoom="5.5"
         cursor={cursor}
         onMouseMove={(e) => {

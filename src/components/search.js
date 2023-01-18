@@ -17,6 +17,8 @@ export default function MapBoxSearch() {
     setRadioList,
     favouriteChannels,
     updateFavouriteChannels,
+    viewport,
+    setViewport,
   } = useContext(RadioStationContext);
   const viewPortHandler = (location, name, url) => {
     axios
@@ -26,8 +28,9 @@ export default function MapBoxSearch() {
       .then((res) => {
         const filteredRadio = res.data.features;
         console.log(
-          res.data.features.filter((reg) => reg.place_name === location)
-       ,"ss" );
+          res.data.features.filter((reg) => reg.place_name === location),
+          "ss"
+        );
         setCurrentChannel({
           location: location,
           name: name,
@@ -71,11 +74,34 @@ export default function MapBoxSearch() {
 
   const onSearch = (value) => {
     // fetchRadioStations(value);
-    fetchRadiosByCountry(value);
+    // fetchRadiosByCountry(value);
+    // const whiteSpace = (value || '').trim().length===0;
+    // console.log(whiteSpace)
+    if(value) {
+      axios
+        .get(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${value}.json?types=country&access_token=${MAPBOXTOKEN.KEY}`
+        )
+        .then((res) => {
+          // console.log(res.data.features[0].place_name);
+          setViewport({
+            country: res.data.features[0].place_name,
+            coordinates: {
+              latitude: res.data.features[0].geometry.coordinates[1],
+              longitude: res.data.features[0].geometry.coordinates[0],
+            },
+          });
+          // console.log(value);
+        })
+        .catch((err)=>{
+          console.log(err,"gi")
+        })
+    }
   };
   return (
     <div className="search-box">
       <Search
+      
         className="search-box-input"
         placeholder="Search radio"
         allowClear
@@ -85,7 +111,7 @@ export default function MapBoxSearch() {
         }}
         autoFocus={radioId === "search" ? true : false}
       />
-      {radioList?.length > 0 && (
+      {/* {radioList?.length > 0 && (
         <Modal
           title={
             <span>
@@ -159,7 +185,7 @@ export default function MapBoxSearch() {
             })}
           </div>
         </Modal>
-      )}
+      )} */}
     </div>
   );
 }

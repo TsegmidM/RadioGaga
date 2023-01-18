@@ -7,6 +7,7 @@ import "./style.css";
 import MapBoxSearch from "./search";
 import { useNavigate, useParams } from "react-router-dom";
 import FavStations from "./favouriteStations";
+import axios from "axios";
 export const RadioStationContext = createContext();
 const reducerChannels = (currState, action) => {
   switch (action.type) {
@@ -28,9 +29,15 @@ const reducerChannels = (currState, action) => {
       window.alert("error!");
   }
 };
+
 export default function RadioGaga() {
   const [radioList, setRadioList] = useState();
   const [currentChannel, setCurrentChannel] = useState();
+  const [viewport, setViewport] = useState({
+    country: "",
+    coordinates: { latitude: "", longitude: "" },
+  });
+
   const [isThemeDark, setIsThemeDark] = useState(false);
   const [favouriteChannels, updateFavouriteChannels] = useReducer(
     reducerChannels,
@@ -38,15 +45,31 @@ export default function RadioGaga() {
       ? JSON.parse(localStorage.getItem("favStations"))
       : { channels: [{}], channelIds: [] }
   );
-  
+
   const { radioId } = useParams();
   const navigate = useNavigate();
- 
+
   useEffect(() => {
     localStorage.setItem("favStations", JSON.stringify(favouriteChannels));
   }, [favouriteChannels]);
 
   useEffect(() => {
+    axios
+      .get("http://radio.garden/api/geo")
+      .then((res) => {
+        setViewport({
+          country: res.data.country_name,
+          coordinates: {
+            latitude: res.data.latitude,
+            longitude: res.data.longitude,
+            zoom: 5,
+          },
+        });
+      })
+      .then(() => {
+        if (viewport) console.log(viewport);
+      });
+    //VIEWPORT GEO OLOH
     if (radioId !== "search") {
       navigate("/");
     }
@@ -63,6 +86,8 @@ export default function RadioGaga() {
         isThemeDark,
         favouriteChannels,
         updateFavouriteChannels,
+        viewport,
+        setViewport,
       }}
     >
       <div className="radioMain">
@@ -77,6 +102,19 @@ export default function RadioGaga() {
           }}
         >
           {isThemeDark ? <MdDarkMode /> : <MdLightMode />}
+        </button>
+
+        <button
+          className="radiogaga"
+          style={{
+            color: isThemeDark ? "#f1c40f" : "f39c12",
+            backgroundColor: isThemeDark ? "#696969" : "white",
+          }}
+          onClick={() => {
+            setViewport({})
+          }}
+        >
+          Show all radio stations
         </button>
         <MapBoxSearch />
         <FavStations />
