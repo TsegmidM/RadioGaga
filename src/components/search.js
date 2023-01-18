@@ -25,9 +25,9 @@ export default function MapBoxSearch() {
       )
       .then((res) => {
         const filteredRadio = res.data.features;
-        // console.log(
-        //   res.data.features.filter((reg) => reg.place_name === location)
-        // );
+        console.log(
+          res.data.features.filter((reg) => reg.place_name === location)
+       ,"ss" );
         setCurrentChannel({
           location: location,
           name: name,
@@ -70,7 +70,8 @@ export default function MapBoxSearch() {
   };
 
   const onSearch = (value) => {
-    fetchRadioStations(value);
+    // fetchRadioStations(value);
+    fetchRadiosByCountry(value);
   };
   return (
     <div className="search-box">

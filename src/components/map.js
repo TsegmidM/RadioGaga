@@ -29,6 +29,7 @@ export default function MyMap() {
     type: "circle",
     source: "countriesall",
     // interactive: true,
+    // filter:['==', 'country', 'Mongolia'],
     paint: {
       "circle-radius": {
         base: 1.75,
