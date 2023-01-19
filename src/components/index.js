@@ -54,22 +54,16 @@ export default function RadioGaga() {
   }, [favouriteChannels]);
 
   useEffect(() => {
-    axios
-      .get("http://radio.garden/api/geo")
-      .then((res) => {
-        setViewport({
-          country: res.data.country_name,
-          coordinates: {
-            latitude: res.data.latitude,
-            longitude: res.data.longitude,
-            zoom: 5,
-          },
-        });
-      })
-      .then(() => {
-        if (viewport) console.log(viewport);
+    axios.get("http://radio.garden/api/geo").then((res) => {
+      setViewport({
+        country: res.data.country_name,
+        coordinates: {
+          latitude: res.data.latitude,
+          longitude: res.data.longitude,
+          zoom: 5,
+        },
       });
-    //VIEWPORT GEO OLOH
+    });
     if (radioId !== "search") {
       navigate("/");
     }
@@ -105,13 +99,13 @@ export default function RadioGaga() {
         </button>
 
         <button
-          className="radiogaga"
+          className="radiogaga-reset"
           style={{
-            color: isThemeDark ? "#f1c40f" : "f39c12",
+            color: isThemeDark ? "#f1c40f" : "red",
             backgroundColor: isThemeDark ? "#696969" : "white",
           }}
           onClick={() => {
-            setViewport({})
+            setViewport({});
           }}
         >
           Show all radio stations
@@ -148,7 +142,6 @@ export default function RadioGaga() {
           volume={0.3}
           showSkipControls={false}
           showJumpControls={false}
-          // autoPlayAfterSrcChange={true}
           showFilledProgress={false}
           hasDefaultKeyBindings={false}
           layout={"stacked"}

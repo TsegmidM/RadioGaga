@@ -30,8 +30,6 @@ export default function MyMap() {
     id: "country",
     type: "circle",
     source: "countriesall",
-    // interactive: true,
-    //  filter:['==', 'country', `${viewport.country}`],
      filter: viewport.country ? ['==', 'country', `${viewport.country}`] : ['has', 'country'],
     paint: {
       "circle-radius": {
@@ -107,7 +105,6 @@ export default function MyMap() {
           }
         }}
         onClick={(e) => {
-          // console.log(e);
           if (!showPopup && e.features[0]) {
             getChannelsbyId(e.features[0].properties?.location_id);
             setShowPopup({
@@ -131,8 +128,6 @@ export default function MyMap() {
             latitude={showPopup.lngLat.lat}
             anchor="bottom-left"
             closeButton={false}
-            // onOpen={() => console.log(showPopup, "ssd")}
-            // closeOnClick={() => setShowPopup(null)}
             onClose={() => {
               setShowPopup(null);
               setRadioList(null);
@@ -151,7 +146,6 @@ export default function MyMap() {
               </span>
             </div>
             {radioList?.slice(0, 8).map((radio, idx) => {
-              // console.log(radio);
               const parts = radio?.href?.split("/");
               const channelId = parts[parts?.length - 1];
               return (
@@ -181,7 +175,6 @@ export default function MyMap() {
                           url: parts,
                         },
                       });
-                      // console.log(favouriteChannels);
                     }}
                   >
                     {favouriteChannels.channelIds?.includes(channelId) ? (
