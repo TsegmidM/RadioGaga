@@ -54,7 +54,7 @@ export default function RadioGaga() {
   }, [favouriteChannels]);
 
   useEffect(() => {
-    axios.get("http://radio.garden/api/geo").then((res) => {
+    axios.get("https://radio.garden/api/geo").then((res) => {
       setViewport({
         country: res.data.country_name,
         coordinates: {
@@ -101,7 +101,7 @@ export default function RadioGaga() {
         <button
           className="radiogaga-reset"
           style={{
-            color: isThemeDark ? "#f1c40f" : "red",
+            color: isThemeDark ? "#f1c40f" : "green",
             backgroundColor: isThemeDark ? "#696969" : "white",
           }}
           onClick={() => {
@@ -122,7 +122,7 @@ export default function RadioGaga() {
           header={
             <span
               style={{
-                color: isThemeDark ? "#f1c40f" : "red",
+                color: isThemeDark ? "#f1c40f" : "green",
               }}
               className="h5Player-span"
             >
@@ -132,7 +132,7 @@ export default function RadioGaga() {
           footer={
             <span
               style={{
-                color: isThemeDark ? "#f1c40f" : "red",
+                color: isThemeDark ? "#f1c40f" : "green",
               }}
               className="h5Player-span"
             >

@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Drawer } from "antd";
 import { useContext, useState } from "react";
 import { MdFavorite, MdFavoriteBorder, MdOutlineRadio } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,13 @@ export default function FavStations() {
     setCurrentChannel,
     isThemeDark,
   } = useContext(RadioStationContext);
-  const [modal2Open, setModal2Open] = useState(false);
+  const [open, setOpen] = useState(false);
+  const showDrawer = () => {
+    setOpen(true);
+  };
+  const onClose = () => {
+    setOpen(false);
+  };
   const navigate = useNavigate();
   return (
     <div>
@@ -19,27 +25,27 @@ export default function FavStations() {
         className="favourite-stations"
         color={isThemeDark ? "#f1c40f" : "red"}
         size={25}
-        onMouseEnter={() => {
-          setModal2Open(true);
-        }}
+        // onMouseEnter={() => {
+        //   // setModal2Open(true);
+
+        // }}\
+        onClick={showDrawer}
       />
-      <Modal
+      <Drawer
+      // width={400}
+      headerStyle={{backgroundColor: isThemeDark ? "#f1c40f" : "green"}}
+      bodyStyle={{ backgroundColor: isThemeDark ? "#696969" : "white", color: isThemeDark ? "white" : "black",}}
+      height={400}
         title={
           <span>
             <MdFavorite color="red" size={25} /> Your Favourite Stations
-            <MdOutlineRadio style={{ color: "green" }} />
+            <MdOutlineRadio style={{ color: "red" }} />
           </span>
         }
-        style={{
-          textAlign: "center",
-        }}
-        width="30vw"
-        //   centered
-        footer={null}
-        open={modal2Open}
-        onCancel={() => {
-          setModal2Open(false);
-        }}
+        placement="right"
+        onClose={onClose}
+        open={open}
+        // height={500}
       >
         {favouriteChannels.channelIds.length > 0
           ? favouriteChannels.channels?.map((channel, idx) => {
@@ -84,7 +90,7 @@ export default function FavStations() {
               );
             })
           : "There is no favourite station yet"}
-      </Modal>
+      </Drawer>
     </div>
   );
 }

@@ -142,7 +142,7 @@ export default function MyMap() {
             >
               <span className="radiolist-span">
                 Choose the radio!
-                <MdOutlineRadio style={{ color: "green" }} />
+                <MdOutlineRadio style={{ color: "red" }} />
               </span>
             </div>
             {radioList?.slice(0, 8).map((radio, idx) => {
