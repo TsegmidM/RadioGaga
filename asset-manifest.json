@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/RadioGaga/static/css/main.d97add23.css",
-    "main.js": "/RadioGaga/static/js/main.51e02b20.js",
+    "main.js": "/RadioGaga/static/js/main.c7948db0.js",
     "static/js/483.7e7dffc5.chunk.js": "/RadioGaga/static/js/483.7e7dffc5.chunk.js",
     "static/js/787.87257e7e.chunk.js": "/RadioGaga/static/js/787.87257e7e.chunk.js",
     "index.html": "/RadioGaga/index.html",
     "main.d97add23.css.map": "/RadioGaga/static/css/main.d97add23.css.map",
-    "main.51e02b20.js.map": "/RadioGaga/static/js/main.51e02b20.js.map",
+    "main.c7948db0.js.map": "/RadioGaga/static/js/main.c7948db0.js.map",
     "483.7e7dffc5.chunk.js.map": "/RadioGaga/static/js/483.7e7dffc5.chunk.js.map",
     "787.87257e7e.chunk.js.map": "/RadioGaga/static/js/787.87257e7e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d97add23.css",
-    "static/js/main.51e02b20.js"
+    "static/js/main.c7948db0.js"
   ]
 }
